@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+# clone 原内核源码
+git clone --depth 1 --branch 4.19.191_mt6765 https://github.com/KrutosVIP/generic_kernel_mediatek_alps.git
+cd generic_kernel_mediatek_alps
+
+# 用BSP defconfig + 开IPC_NS
+make ARCH=arm64 k65v1_64_bsp_defconfig
+scripts/config --enable SYSVIPC
+scripts/config --enable IPC_NS
+make ARCH=arm64 olddefconfig
+
+# 编译
+make ARCH=arm64 -j$(nproc) Image.gz-dtb
