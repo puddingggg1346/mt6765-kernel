@@ -6,7 +6,7 @@ git clone --depth 1 --branch 4.19.191_mt6765 https://github.com/KrutosVIP/generi
 cd generic_kernel_mediatek_alps
 
 # === 修复1: 全局 -fgnu89-inline (解决所有always_inline问题) ===
-sed -i 's|^KBUILD_CFLAGS   := -Wall|KBUILD_CFLAGS := -Wall -fgnu89-inline|' Makefile
+sed -i 's|^KBUILD_CFLAGS   := -Wall|KBUILD_CFLAGS := -Wall -fgnu89-inline -Wno-error|' Makefile
 
 # === 修复2: subdir-ccflags-y -> ccflags-y (include路径对本级生效) ===
 sed -i 's|subdir-ccflags-y += -I$(srctree)/drivers/staging/android/mtk_ion|ccflags-y += -I$(srctree)/drivers/staging/android/mtk_ion|' mm/Makefile
