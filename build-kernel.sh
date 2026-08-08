@@ -46,6 +46,10 @@ new = """        for (i = 0; i < KPD_NUM_MEMS; i++) {
 c = c.replace(old, new)
 open(p,'w').write(c)
 INNER
+# === 修复 met_ftrace_touch.h (define_trace需include/trace/events/) ===
+mkdir -p include/trace/events
+cp drivers/input/touchscreen/mediatek/met_ftrace_touch.h include/trace/events/met_ftrace_touch.h 2>/dev/null || true
+
 # === 配置 ===
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
