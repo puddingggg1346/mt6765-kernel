@@ -33,6 +33,9 @@ c = re.sub(r'(?ms)^inline void uclamp_se_set\(struct uclamp_se \*uc_se.*?^\}', '
 open('kernel/sched/core.c','w').write(c)
 PYEOF
 
+# === 修复5: ksm_flock extern inline ===
+sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flags);|extern inline void ksm_flock(struct keyslot_manager *ksm, unsigned int flags);|' include/linux/keyslot-manager.h
+
 # === 配置 ===
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
