@@ -54,4 +54,4 @@ scripts/config --disable CONFIG_CC_WERROR
 make ARCH=arm64 olddefconfig
 
 # === 编译(gcc-9, 老GCC, 无需额外兼容flag) ===
-make ARCH=arm64 -j$(nproc) Image.gz-dtb 2>&1 | tee build.log
+make ARCH=arm64 -j$(nproc) Image.gz-dtb KCFLAGS="-Wno-error -Wno-misleading-indentation -Wno-error=misleading-indentation -fgnu89-inline" 2>make ARCH=arm64 -j$(nproc) Image.gz-dtb 2>&11 | tee build.log
