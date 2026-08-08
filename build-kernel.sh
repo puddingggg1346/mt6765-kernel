@@ -2,16 +2,9 @@
 set -e
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
-
-# clone 原内核源码
-git clone --depth 1 --branch 4.19.191_mt6765 https://github.com/KrutosVIP/generic_kernel_mediatek_alps.git
-cd generic_kernel_mediatek_alps
-
-# 用BSP defconfig + 开IPC_NS
-make ARCH=arm64 k65v1_64_bsp_defconfig
-scripts/config --enable SYSVIPC
-scripts/config --enable IPC_NS
-make ARCH=arm64 olddefconfig
-
-# 编译
-make ARCH=arm64 -j$(nproc) Image.gz-dtb
+git clone --depth 1 https://github.com/lowendlibre/linux-mt6762.git
+cd linux-mt6762
+echo "=== CONFIGS ==="
+ls arch/arm64/configs/ 2>/dev/null || echo "no configs"
+echo "=== BUILD SALTS ==="
+grep -rn "defconfig" arch/arm64/configs/*.defconfig 2>/dev/null | head -5
