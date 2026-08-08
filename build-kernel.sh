@@ -28,6 +28,24 @@ c = re.sub(r'(?ms)^inline void uclamp_se_set\(struct uclamp_se \*uc_se.*?^\}', '
 open('kernel/sched/core.c','w').write(c)
 PYEOF
 
+# === 修复hal_kpd.c: for漏花括号导致misleading-indentation ===
+python3 << 'INNER'
+p = 'drivers/input/keyboard/mediatek/mt6765/hal_kpd.c'
+c = open(p).read()
+old = """        for (i = 0; i < KPD_NUM_MEMS; i++)
+                keymap_state[i] = kpd_keymap_state[i];
+                kpd_info("init_keymap_state done: %x %x %x %x %x!\n",
+                        keymap_state[0], keymap_state[1], keymap_state[2],
+                 keymap_state[3], keymap_state[4]);"""
+new = """        for (i = 0; i < KPD_NUM_MEMS; i++) {
+                keymap_state[i] = kpd_keymap_state[i];
+        }
+        kpd_info("init_keymap_state done: %x %x %x %x %x!\n",
+                keymap_state[0], keymap_state[1], keymap_state[2],
+                keymap_state[3], keymap_state[4]);"""
+c = c.replace(old, new)
+open(p,'w').write(c)
+INNER
 # === 配置 ===
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
