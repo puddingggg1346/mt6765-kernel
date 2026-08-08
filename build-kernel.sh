@@ -36,9 +36,6 @@ PYEOF
 # === 修复5: ksm_flock extern inline ===
 sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flags);|extern inline void ksm_flock(struct keyslot_manager *ksm, unsigned int flags);|' include/linux/keyslot-manager.h
 
-# === 修复6: 移除所有 -Werror (新GCCwarning多,避免转error) ===
-find . -name "Makefile" -exec sed -i 's/-Werror\b//g; s/-Werror=[A-Za-z_-]*//g' {} +
-
 # === 配置 ===
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
@@ -47,4 +44,4 @@ scripts/config --disable CONFIG_CC_WERROR
 make ARCH=arm64 olddefconfig
 
 # === 编译 ===
-make ARCH=arm64 -j$(nproc) Image.gz-dtb KCFLAGS="-Wno-error -fgnu89-inline" 2>&1 | tee build.log
+make ARCH=arm64 -j$(nproc) Image.gz-dtb KCFLAGS="-Wno-error -Wno-error=misleading-indentation -fgnu89-inline" 2>&1 | tee build.log
