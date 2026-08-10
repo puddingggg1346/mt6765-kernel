@@ -13,7 +13,7 @@ echo 'ccflags-y += -I$(srctree)/kernel/trace' >> kernel/trace/Makefile
 
 # met_ftrace_touch
 mkdir -p include/trace/events
-cp drivers/input/touchscreen/mediatek/met_ftrace_touch.h include/trace/events/met_ftrace_touch.h 2>/dev/null || true
+cp drivers/input/touchscreen/mediatek/met_ftrace_touch.h ./met_ftrace_touch.h 2>/dev/null || true
 
 # uclamp_se_set
 python3 << 'PYEOF'
