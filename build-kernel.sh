@@ -41,6 +41,10 @@ sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flag
 sed -i 's|^inline void blk_crypto_flock(struct keyslot_manager \*ksm, unsigned int flags);|void blk_crypto_flock(struct keyslot_manager *ksm, unsigned int flags);|' include/linux/blk-crypto.h
 sed -i 's|^inline void blk_crypto_flock(struct keyslot_manager \*ksm, unsigned int flags)|void blk_crypto_flock(struct keyslot_manager *ksm, unsigned int flags)|' block/blk-crypto.c
 
+# 修复MTK include: mtk_sd.h / mtk_ppm_platform.h
+echo 'ccflags-y += -I$(srctree)/drivers/mmc/host/mediatek/ComboA' >> drivers/mmc/host/mediatek/ComboA/Makefile
+echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/inc -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765' >> drivers/misc/mediatek/base/power/ppm_v3/src/Makefile
+
 # 配置
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
