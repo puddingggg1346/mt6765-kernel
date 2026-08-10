@@ -13,7 +13,23 @@ echo 'ccflags-y += -I$(srctree)/kernel/trace' >> kernel/trace/Makefile
 
 # met_ftrace_touch
 mkdir -p include/trace/events
-cp drivers/input/touchscreen/mediatek/met_ftrace_touch.h include/met_ftrace_touch.h 2>/dev/null || true
+find . -name met_ftrace_touch.h -exec cp {} include/trace/events/met_ftrace_touch.h \; -quit 2>/dev/null || true
+cp include/trace/events/met_ftrace_touch.h include/met_ftrace_touch.h 2>/dev/null || true
+
+# 全局删除所有 -Werror (必须在此目录, 解决所有Werror=xxx)
+python3 << 'WERR'
+import os, re
+for root, dirs, files in os.walk('.'):
+    for f in files:
+        if f == 'Makefile':
+            p = os.path.join(root, f)
+            try:
+                s = open(p).read()
+                s = re.sub(r'-Werror(?:=[A-Za-z0-9_-]+)?', '', s)
+                open(p, 'w').write(s)
+            except:
+                pass
+WERR
 
 # uclamp_se_set
 python3 << 'PYEOF'
@@ -36,6 +52,10 @@ PYEOF
 sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flags);|void ksm_flock(struct keyslot_manager *ksm, unsigned int flags);|' include/linux/keyslot-manager.h
 sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flags)|void ksm_flock(struct keyslot_manager *ksm, unsigned int flags)|' block/keyslot-manager.c
 
+# blk_crypto_flock: header改extern声明, c改普通定义
+sed -i 's|^inline void blk_crypto_flock(struct blk_crypto_key \*key);|void blk_crypto_flock(struct blk_crypto_key *key);|' include/linux/blk-crypto.h
+sed -i 's|^inline void blk_crypto_flock(struct blk_crypto_key \*key)|void blk_crypto_flock(struct blk_crypto_key *key)|' block/blk-crypto.c
+
 # 配置
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
@@ -44,4 +64,4 @@ scripts/config --disable CONFIG_CC_WERROR
 make ARCH=arm64 olddefconfig
 
 # 编译
-make ARCH=arm64 -j$(nproc) Image.gz-dtb KCFLAGS="-Wno-error -Wno-misleading-indentation -Wno-error=misleading-indentation -fgnu89-inline" 2>&1 | tee build.log
+make ARCH=arm64 -j$(nproc) Image.gz-dtb KCFLAGS="-Wno-error -Wno-error=format -Wno-misleading-indentation -Wno-error=misleading-indentation -fgnu89-inline" 2>&1 | tee build.log
