@@ -49,6 +49,38 @@ echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/inc -I$(
 echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/inc' >> drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765/Makefile
 echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765' >> drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765/Makefile
 
+# 批量添加所有MTK include目录到KBUILD_CFLAGS
+python3 << 'MTKALL'
+import os
+dirs = set()
+for root, d, files in os.walk('drivers/misc/mediatek'):
+    if any(f.endswith('.h') for f in files):
+        dirs.add('$(srctree)/'+root)
+# 也加 drivers/mmc/mediatek 和 touchscreen
+for base in ['drivers/mmc/host/mediatek','drivers/input/touchscreen']:
+    for root, d, files in os.walk(base):
+        if any(f.endswith('.h') for f in files):
+            dirs.add('$(srctree)/'+root)
+inc = ' '.join(dirs)
+mk = open('Makefile').read()
+mk = mk.replace('KBUILD_CFLAGS := -Wall', 'KBUILD_CFLAGS := -Wall ' + inc, 1)
+open('Makefile','w').write(mk)
+MTKALL
+
+# 批量添加所有MTK include目录到KBUILD_CFLAGS
+python3 << 'MTKALL'
+import os
+dirs = set()
+for base in ['drivers/misc/mediatek','drivers/mmc/host/mediatek','drivers/input/touchscreen','drivers/gpu/mediatek']:
+    for root, d, files in os.walk(base):
+        if any(f.endswith('.h') for f in files):
+            dirs.add('$(srctree)/'+root)
+inc = ' '.join(dirs)
+mk = open('Makefile').read()
+mk = mk.replace('KBUILD_CFLAGS := -Wall', 'KBUILD_CFLAGS := -Wall ' + inc, 1)
+open('Makefile','w').write(mk)
+MTKALL
+
 # 配置
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
