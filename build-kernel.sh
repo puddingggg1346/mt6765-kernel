@@ -45,6 +45,10 @@ sed -i 's|^inline void blk_crypto_flock(struct keyslot_manager \*ksm, unsigned i
 echo 'ccflags-y += -I$(srctree)/drivers/mmc/host/mediatek/ComboA' >> drivers/mmc/host/mediatek/ComboA/Makefile
 echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/inc -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765' >> drivers/misc/mediatek/base/power/ppm_v3/src/Makefile
 
+# 加 ppm 平台 include (mtk_ppm_platform.h 在同目录 mach/mt6765, internal.h 在inc)
+echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/inc' >> drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765/Makefile
+echo 'ccflags-y += -I$(srctree)/drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765' >> drivers/misc/mediatek/base/power/ppm_v3/src/mach/mt6765/Makefile
+
 # 配置
 make ARCH=arm64 k65v1_64_bsp_defconfig
 scripts/config --enable SYSVIPC
