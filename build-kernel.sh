@@ -38,8 +38,8 @@ sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flag
 sed -i 's|^inline void ksm_flock(struct keyslot_manager \*ksm, unsigned int flags)|void ksm_flock(struct keyslot_manager *ksm, unsigned int flags)|' block/keyslot-manager.c
 
 # blk_crypto_flock
-sed -i 's|^inline void blk_crypto_flock(struct blk_crypto_key \*key);|void blk_crypto_flock(struct blk_crypto_key *key);|' include/linux/blk-crypto.h
-sed -i 's|^inline void blk_crypto_flock(struct blk_crypto_key \*key)|void blk_crypto_flock(struct blk_crypto_key *key)|' block/blk-crypto.c
+sed -i 's|^inline void blk_crypto_flock(struct keyslot_manager \*ksm, unsigned int flags);|void blk_crypto_flock(struct keyslot_manager *ksm, unsigned int flags);|' include/linux/blk-crypto.h
+sed -i 's|^inline void blk_crypto_flock(struct keyslot_manager \*ksm, unsigned int flags)|void blk_crypto_flock(struct keyslot_manager *ksm, unsigned int flags)|' block/blk-crypto.c
 
 # 配置
 make ARCH=arm64 k65v1_64_bsp_defconfig
